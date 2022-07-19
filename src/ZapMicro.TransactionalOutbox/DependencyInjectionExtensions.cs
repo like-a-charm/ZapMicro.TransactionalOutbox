@@ -30,7 +30,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IOutboxMessageRepository, OutboxMessageRepository<T>>()
                 .AddScoped<IWithNextOutboxMessageCommand, WithNextOutboxMessageCommand>()
                 .AddScoped<IEnqueueOutboxMessageCommand, EnqueueOutboxMessageCommand>()
-                .AddScoped<IHostedService, DequeueOutboxMessagesService>();
+                .AddHostedService<DequeueOutboxMessagesService>()
+                .AddScoped<IDequeueOutboxMessagesServiceWorker, DequeueOutboxMessagesServiceWorker>();
             
             configuration.OutboxMessageHandlersFactories
                 .ToList()

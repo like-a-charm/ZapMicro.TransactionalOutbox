@@ -1,99 +1,63 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using ZapMicro.TransactionalOutbox.BackgroundServices;
-using ZapMicro.TransactionalOutbox.Commands;
-using ZapMicro.TransactionalOutbox.Configurations;
-using ZapMicro.TransactionalOutbox.Handlers;
-using ZapMicro.TransactionalOutbox.Messages;
 using static ZapMicro.TransactionalOutbox.UnitTests.Utils;
 
 namespace ZapMicro.TransactionalOutbox.UnitTests.BackgroundServices
 {
-    internal class TestDequeueOutboxMessagesService : DequeueOutboxMessagesService
-    {
-        public TestDequeueOutboxMessagesService(
-            IWithNextOutboxMessageCommand withNextOutboxMessageCommand,
-            IEnumerable<IOutboxMessageHandler> outboxMessageHandlers,
-            ILogger<DequeueOutboxMessagesService> logger,
-            DequeueOutboxMessagesConfiguration configuration) : base(withNextOutboxMessageCommand, outboxMessageHandlers, logger, configuration)
-        {
-        }
-
-        public new virtual Task ExecuteAsync(CancellationToken token) => base.ExecuteAsync(token);
-    }
-
-    internal class TestLogger : ILogger<DequeueOutboxMessagesService>
-    {
-        private ILogger<DequeueOutboxMessagesService> _loggerImplementation;
-
-        public TestLogger(ILogger<DequeueOutboxMessagesService> loggerImplementation)
-        {
-            _loggerImplementation = loggerImplementation;
-        }
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-        {
-            HasLogMethodBeenCalled = true;
-            _loggerImplementation.Log(logLevel, eventId, state, exception, formatter);
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return _loggerImplementation.IsEnabled(logLevel);
-        }
-
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return _loggerImplementation.BeginScope(state);
-        }
-
-        public bool HasLogMethodBeenCalled { get; private set; }
-    }
-    
     public class DequeueOutboxMessagesServiceTest
     {
-        
-        private TestDequeueOutboxMessagesService? _dequeueOutboxMessagesService;
-        private IWithNextOutboxMessageCommand? _withNextOutboxMessageCommand;
-        private ILogger<DequeueOutboxMessagesService>? _logger;
-        private List<IOutboxMessageHandler>? _handlers;
+        internal class TestDequeueOutboxMessagesService : DequeueOutboxMessagesService
+        {
+            public TestDequeueOutboxMessagesService(IServiceProvider serviceProvider) : base(serviceProvider)
+            {
+            }
+
+            public new virtual Task ExecuteAsync(CancellationToken token) => base.ExecuteAsync(token);
+
+        }
+
+        private TestDequeueOutboxMessagesService _dequeueOutboxMessagesService;
+        private IDequeueOutboxMessagesServiceWorker _dequeueOutboxMessagesServiceWorker;
 
         [SetUp]
         public void SetUp()
         {
-            _withNextOutboxMessageCommand = Substitute.For<IWithNextOutboxMessageCommand>();
-            _handlers = new List<IOutboxMessageHandler>();
-            _logger = new TestLogger(Substitute.For<ILogger<DequeueOutboxMessagesService>>());
-            var configuration = new DequeueOutboxMessagesConfiguration
-            {
-                EmptyQueueDelayInSeconds = 1
-            };
-            _dequeueOutboxMessagesService = Substitute.ForPartsOf<TestDequeueOutboxMessagesService>(_withNextOutboxMessageCommand, _handlers, _logger, configuration);
+            var outerServiceProvider = Substitute.For<IServiceProvider>();
+            var scope = Substitute.For<IServiceScope>();
+            var scopedServiceProvider = Substitute.For<IServiceProvider>();
+            var scopeFactory = Substitute.For<IServiceScopeFactory>();
+            _dequeueOutboxMessagesServiceWorker = Substitute.For<IDequeueOutboxMessagesServiceWorker>();
 
+            outerServiceProvider.GetService(typeof(IServiceScopeFactory)).Returns(scopeFactory);
+            scopeFactory.CreateScope().Returns(scope);
+            scope.ServiceProvider.Returns(scopedServiceProvider);
+            scopedServiceProvider.GetService(typeof(IDequeueOutboxMessagesServiceWorker))
+                .Returns(_dequeueOutboxMessagesServiceWorker);
+            
+            
+            _dequeueOutboxMessagesService = Substitute.ForPartsOf<TestDequeueOutboxMessagesService>(outerServiceProvider);
         }
-
+        
         [Test]
         public async Task ExecuteAsync_ShouldExecuteUntilCancellationIsRequested()
         {
             CancellationToken token = new CancellationTokenSource().Token;
             int calledTimes = 0;
             _dequeueOutboxMessagesService.IsCancellationRequested(Arg.Any<CancellationToken>()).Returns(info => calledTimes++ > 0);
-            _dequeueOutboxMessagesService.DequeueMessage(Arg.Any<CancellationToken>()).Returns(ValueTask.CompletedTask);
+            _dequeueOutboxMessagesServiceWorker.DequeueMessage(Arg.Any<CancellationToken>()).Returns(ValueTask.CompletedTask);
             
             _dequeueOutboxMessagesService.ClearReceivedCalls();
 
             Act(async () => await _dequeueOutboxMessagesService.ExecuteAsync(token))
                 .Should().NotThrow();
 
-            _dequeueOutboxMessagesService.Received(1).DequeueMessage(token);
+            _dequeueOutboxMessagesServiceWorker.Received(1).DequeueMessage(token);
             _dequeueOutboxMessagesService.Received(2).IsCancellationRequested(token);
         }
         
@@ -116,96 +80,5 @@ namespace ZapMicro.TransactionalOutbox.UnitTests.BackgroundServices
 
             _dequeueOutboxMessagesService.IsCancellationRequested(token).Should().BeFalse();
         }
-        
-        [Test]
-        public void HandleOutboxMessage_ShouldHandleOutboxMessage_IfMessageHandlerExists()
-        {
-            var messageHandler = Substitute.For<IOutboxMessageHandler>();
-            var managedOutboxMessageType = typeof(TestOutboxMessage);
-            
-            _handlers.Add(messageHandler);
-
-            messageHandler.ManagedOutboxMessageType.Returns(managedOutboxMessageType);
-
-            Act(async () =>
-                    await _dequeueOutboxMessagesService.HandleOutboxMessage(new TestOutboxMessage(),
-                        new CancellationToken()))
-                .Should().NotThrow();
-
-            messageHandler.Received(1).OnOutboxMessageCreated(Arg.Any<IOutboxMessage>(), Arg.Any<CancellationToken>());
-        }
-        
-        [Test]
-        public void HandleOutboxMessage_ShouldNotThrow_IfMessageHandlerDoesntExist()
-        {
-            Act(async () =>
-                    await _dequeueOutboxMessagesService.HandleOutboxMessage(new TestOutboxMessage(),
-                        new CancellationToken()))
-                .Should().NotThrow();
-        }
-        
-        [Test]
-        public void Delay_ShouldNotThrow()
-        {
-            Act(async () =>
-                    await _dequeueOutboxMessagesService.Delay(new CancellationToken()))
-                .Should().NotThrow();
-        }
-
-        [Test]
-        public void DequeueMessage_ShouldInvokeHandleMessage_IfNextOutboxMessageExists()
-        {
-            _withNextOutboxMessageCommand
-                .WithNextIfNotNullAsync(Arg.Any<Func<IOutboxMessage, CancellationToken, ValueTask>>(),
-                    Arg.Any<CancellationToken>())
-                .Returns(info =>
-                {
-                    info.ArgAt<Func<IOutboxMessage, CancellationToken, ValueTask>>(0)
-                        .Invoke(new TestOutboxMessage(), info.ArgAt<CancellationToken>(1));
-                    return new TestOutboxMessage();
-                });
-
-            _dequeueOutboxMessagesService.HandleOutboxMessage(Arg.Any<IOutboxMessage>(), Arg.Any<CancellationToken>())
-                .Returns(ValueTask.CompletedTask);
-
-            Act(async () => await _dequeueOutboxMessagesService.DequeueMessage(new CancellationToken()))
-                .Should().NotThrow();
-
-            _dequeueOutboxMessagesService.Received(1)
-                .HandleOutboxMessage(Arg.Any<IOutboxMessage>(), Arg.Any<CancellationToken>());
-        }
-        
-        [Test]
-        public void DequeueMessage_ShouldInvokeDelay_IfNextOutboxMessageDoesntExist()
-        {
-            _withNextOutboxMessageCommand
-                .WithNextIfNotNullAsync(Arg.Any<Func<IOutboxMessage, CancellationToken, ValueTask>>(),
-                    Arg.Any<CancellationToken>())
-                .Returns(default(IOutboxMessage));
-
-            _dequeueOutboxMessagesService.Delay(Arg.Any<CancellationToken>())
-                .Returns(Task.CompletedTask);
-
-            Act(async () => await _dequeueOutboxMessagesService.DequeueMessage(new CancellationToken()))
-                .Should().NotThrow();
-
-            _dequeueOutboxMessagesService.Received(1)
-                .Delay(Arg.Any<CancellationToken>());
-        }
-        
-        [Test]
-        public void DequeueMessage_LogsError_IfExceptionIsThrown()
-        {
-            _withNextOutboxMessageCommand
-                .WithNextIfNotNullAsync(Arg.Any<Func<IOutboxMessage, CancellationToken, ValueTask>>(),
-                    Arg.Any<CancellationToken>())
-                .Throws(new Exception());
-
-            Act(async () => await _dequeueOutboxMessagesService.DequeueMessage(new CancellationToken()))
-                .Should().NotThrow();
-
-            ((TestLogger)_logger).HasLogMethodBeenCalled.Should().BeTrue();
-        }
-        
     }
 }

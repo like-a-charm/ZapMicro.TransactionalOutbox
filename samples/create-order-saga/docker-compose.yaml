@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  order-service:
+    build:
+      context: ./../../
+      dockerfile: samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService/Dockerfile
+    ports:
+      - '8000:80'
+    environment:
+      - 'QUEUE_STORAGE_CONNECTION_STRING=DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://azurite:10001/devstoreaccount1"'
+      - 'QUEUE_NAME=create-order-saga-queue'
+      - 'ORDERS_DATABASE_CONNECTION_STRING=Data Source=db;Initial Catalog=order-service;Password=@_str0nG-p@ssw0rd!;User ID=sa'
+    depends_on:
+      - database
+      - queues
+    volumes:
+      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService'
+  queues:
+    build:
+      context: queue
+    ports:
+      - 9004:10000
+      - 9005:10001
+    command: "azurite-queue --loose --queueHost 0.0.0.0"
+    
+  database:
+    build:
+      context: queue
+    environment:
+      SA_PASSWORD: "@_str0nG-p@ssw0rd!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - 9002:1433

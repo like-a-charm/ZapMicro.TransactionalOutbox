@@ -8,6 +8,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{617B8A70-3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZapMicro.TransactionalOutbox.UnitTests", "test\ZapMicro.TransactionalOutbox.UnitTests\ZapMicro.TransactionalOutbox.UnitTests.csproj", "{E4F2B07B-CF0A-47EC-86A3-E9F1648F3917}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{5177EEC2-D628-4065-9356-85BDCF765BC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "create-order-saga", "create-order-saga", "{765E81E9-23FB-4F10-AE63-1B4E24455852}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService", "samples\create-order-saga\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.csproj", "{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared", "samples\create-order-saga\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.csproj", "{8F943433-6038-43C7-8A18-165478B21586}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,6 +24,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{41F1B2EB-AD70-4C79-B4C8-D018EE9B2A06} = {B34C73D6-8317-4282-BE69-9DB7ECB9A094}
 		{E4F2B07B-CF0A-47EC-86A3-E9F1648F3917} = {617B8A70-3C62-42B7-818E-F4C5E66E09B0}
+		{765E81E9-23FB-4F10-AE63-1B4E24455852} = {5177EEC2-D628-4065-9356-85BDCF765BC8}
+		{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45} = {765E81E9-23FB-4F10-AE63-1B4E24455852}
+		{8F943433-6038-43C7-8A18-165478B21586} = {765E81E9-23FB-4F10-AE63-1B4E24455852}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{41F1B2EB-AD70-4C79-B4C8-D018EE9B2A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -26,5 +37,13 @@ Global
 		{E4F2B07B-CF0A-47EC-86A3-E9F1648F3917}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4F2B07B-CF0A-47EC-86A3-E9F1648F3917}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4F2B07B-CF0A-47EC-86A3-E9F1648F3917}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F943433-6038-43C7-8A18-165478B21586}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F943433-6038-43C7-8A18-165478B21586}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F943433-6038-43C7-8A18-165478B21586}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F943433-6038-43C7-8A18-165478B21586}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
