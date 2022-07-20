@@ -5,7 +5,7 @@ using ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Events;
 
 namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Handlers
 {
-    public class OnPaymentSuccededEventHandler : EventHandlerBase<OnPaymentSucceded>
+    public class OnPaymentSuccededEventHandler : EventHandlerBase<OnPaymentSucceeded>
     {
         private IOrderService _orderService;
 
@@ -14,7 +14,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Hand
             _orderService = orderService;
         }
 
-        public override async ValueTask HandleEvent(OnPaymentSucceded @event)
+        public override async ValueTask HandleEvent(OnPaymentSucceeded @event)
         {
             await _orderService.UpdateOrderStatus(@event.OrderId, OrderStatus.Confirmed);
         }

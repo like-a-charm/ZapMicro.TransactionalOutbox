@@ -13,11 +13,11 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Serv
 {
     public class OrderService: IOrderService
     {
-        private readonly IRepository<Order, Guid> _repository;
+        private readonly IOrderRepository _repository;
         private readonly IEnqueueOutboxMessageCommand _enqueueOutboxMessageCommand;
         private readonly OrderServiceDbContext _orderServiceDbContext;
 
-        public OrderService(IRepository<Order, Guid> repository, IEnqueueOutboxMessageCommand enqueueOutboxMessageCommand, OrderServiceDbContext orderServiceDbContext)
+        public OrderService(IOrderRepository repository, IEnqueueOutboxMessageCommand enqueueOutboxMessageCommand, OrderServiceDbContext orderServiceDbContext)
         {
             _repository = repository;
             _enqueueOutboxMessageCommand = enqueueOutboxMessageCommand;
@@ -44,6 +44,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Serv
             }, CancellationToken.None);
             
             await _orderServiceDbContext.Database.CommitTransactionAsync();
+            await _orderServiceDbContext.SaveChangesAsync();
             return order;
         }
 

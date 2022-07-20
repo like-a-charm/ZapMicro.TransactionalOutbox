@@ -1,6 +1,6 @@
 using System;
 
-namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Entities
+namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Entities
 {
     public abstract class AggregateBase<T> : EntityBase<T>, IAggregate<T>
     {

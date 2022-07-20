@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Entities;
+using ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Entities;
 
-namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Repositories
+namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Repositories
 {
     public interface IRepository<TAggregate, in TId> where TAggregate : class, IAggregate<TId>
     {

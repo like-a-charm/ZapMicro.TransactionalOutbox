@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZapMicro.TransactionalOutbo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared", "samples\create-order-saga\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.csproj", "{8F943433-6038-43C7-8A18-165478B21586}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService", "samples\create-order-saga\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService\ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService.csproj", "{3F8F6AA0-DD84-4D5F-A834-6A8310161E39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,7 @@ Global
 		{765E81E9-23FB-4F10-AE63-1B4E24455852} = {5177EEC2-D628-4065-9356-85BDCF765BC8}
 		{DF10AC8E-AD53-4AC8-B2B1-404CB60C5B45} = {765E81E9-23FB-4F10-AE63-1B4E24455852}
 		{8F943433-6038-43C7-8A18-165478B21586} = {765E81E9-23FB-4F10-AE63-1B4E24455852}
+		{3F8F6AA0-DD84-4D5F-A834-6A8310161E39} = {765E81E9-23FB-4F10-AE63-1B4E24455852}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{41F1B2EB-AD70-4C79-B4C8-D018EE9B2A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -45,5 +48,9 @@ Global
 		{8F943433-6038-43C7-8A18-165478B21586}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F943433-6038-43C7-8A18-165478B21586}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F943433-6038-43C7-8A18-165478B21586}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F8F6AA0-DD84-4D5F-A834-6A8310161E39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F8F6AA0-DD84-4D5F-A834-6A8310161E39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F8F6AA0-DD84-4D5F-A834-6A8310161E39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F8F6AA0-DD84-4D5F-A834-6A8310161E39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

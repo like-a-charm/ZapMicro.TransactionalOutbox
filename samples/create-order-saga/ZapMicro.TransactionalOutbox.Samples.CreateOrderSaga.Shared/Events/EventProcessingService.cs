@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure.Storage.Queues;
@@ -11,10 +10,12 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Events
     public class EventProcessingService: BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly Func<QueueClient> _queueClientFactory;
 
-        public EventProcessingService(IServiceProvider serviceProvider)
+        public EventProcessingService(IServiceProvider serviceProvider, Func<QueueClient> queueClientFactory)
         {
             _serviceProvider = serviceProvider;
+            _queueClientFactory = queueClientFactory;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,7 +24,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Events
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var client = scope.ServiceProvider.GetRequiredService<QueueClient>();
+                    var client = _queueClientFactory();
                     var eventHandlers = scope.ServiceProvider.GetRequiredService<IEventHandlers>();
                     try
                     {

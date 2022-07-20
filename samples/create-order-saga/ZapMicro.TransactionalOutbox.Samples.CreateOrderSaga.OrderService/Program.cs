@@ -21,7 +21,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddTransactionalOutbox<OrderServiceDbContext>(configBuilder =>
     configBuilder.ConfigureDequeueOutboxMessagesConfiguration(new DequeueOutboxMessagesConfiguration
     {
@@ -38,8 +38,12 @@ builder.Services.AddScoped<IEventHandler, OnPaymentFailedEventHandler>();
 builder.Services.AddScoped<IEventHandler, OnPaymentSuccededEventHandler>();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddScoped<QueueClient>(sp => new QueueClient(Environment.GetEnvironmentVariable("QUEUE_STORAGE_CONNECTION_STRING"),
-    Environment.GetEnvironmentVariable("QUEUE_NAME")));
+QueueClient CreateOrderQueueClientFactory() => new QueueClient(Environment.GetEnvironmentVariable("QUEUE_STORAGE_CONNECTION_STRING"), Environment.GetEnvironmentVariable("CREATE_ORDER_QUEUE_NAME"));
+
+QueueClient PaymentCompletedQueueClientFactory() => new QueueClient(Environment.GetEnvironmentVariable("QUEUE_STORAGE_CONNECTION_STRING"), Environment.GetEnvironmentVariable("PAYMENT_COMPLETED_QUEUE_NAME"));
+
+builder.Services.AddScoped(sp => new EventProcessingService(sp, PaymentCompletedQueueClientFactory));
+builder.Services.AddScoped(sp => CreateOrderQueueClientFactory());
 
 var app = builder.Build();
 
@@ -62,6 +66,10 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<OrderServiceDbContext>();
     db.Database.Migrate();
+    var queueClient1 = CreateOrderQueueClientFactory();
+    await queueClient1.CreateIfNotExistsAsync();
+    var queueClient2 = PaymentCompletedQueueClientFactory();
+    await queueClient2.CreateIfNotExistsAsync();
 }
 
 

@@ -9,7 +9,6 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Prof
         public OrderServiceProfile()
         {
             CreateMap<Order, OrderDto>().ReverseMap();
-            CreateMap<OrderStatus, OrderStatusDto>().ReverseMap();
             CreateMap<OrderLine, OrderLineDto>().ReverseMap();
             CreateMap<Adjustment, AdjustmentDto>().ReverseMap();
         }

@@ -33,9 +33,19 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Cont
             var lines = createOrderRequest.Lines.Select(x => _mapper.Map<OrderLine>(x));
             var adjustments = createOrderRequest.Adjustments.Select(x => _mapper.Map<Adjustment>(x));
             var order = await _orderService.CreateOrder(lines, adjustments);
-            return new ObjectResult(order)
+            return new ObjectResult(_mapper.Map<OrderDto>(order))
             {
                 StatusCode = 201
+            };
+        }
+        
+        [HttpGet("{orderId:guid}",Name = "GetOrder")]
+        public async Task<ActionResult> Get(Guid orderId)
+        {
+            var order = await _orderService.GetOrderById(orderId);
+            return new ObjectResult(_mapper.Map<OrderDto>(order))
+            {
+                StatusCode = 200
             };
         }
     }

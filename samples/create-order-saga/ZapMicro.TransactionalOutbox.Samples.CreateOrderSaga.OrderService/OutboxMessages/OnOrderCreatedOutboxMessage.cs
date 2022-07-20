@@ -6,6 +6,6 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Outb
     public class OnOrderCreatedOutboxMessage: IOutboxMessage
     {
         public Guid OrderId { get; set; }
-        public decimal OrderGrandTotal { get; set; }
+        public double OrderGrandTotal { get; set; }
     }
 }

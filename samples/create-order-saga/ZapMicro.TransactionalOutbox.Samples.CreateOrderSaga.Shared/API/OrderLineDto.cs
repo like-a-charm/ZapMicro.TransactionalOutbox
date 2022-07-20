@@ -8,9 +8,9 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.API
     {
         public string ProductId { get; set; }
         public uint ProductQuantity { get; set; }
-        public decimal ProductPrice { get; set; }
+        public double ProductPrice { get; set; }
         public IEnumerable<AdjustmentDto> Adjustments { get; set; }
-        public decimal Total { get; set; }
-        public decimal FinalTotal {get; set; }
+        public double Total { get; set; }
+        public double FinalTotal {get; set; }
     }
 }
