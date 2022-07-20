@@ -63,6 +63,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Serv
             }
             order.Status = newStatus;
             _repository.Update(order);
+            await _orderServiceDbContext.SaveChangesAsync();
         }
 
         private void CreateIds(Order order)

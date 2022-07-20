@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Queues;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Events
 {
@@ -29,8 +30,14 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Events
                     try
                     {
                         var message = await client.ReceiveMessageAsync();
-                        var @event = EventsConvert.Deserialize(message.Value.Body.ToString());
-                        await eventHandlers.HandleEvent(@event);
+                        if (message?.Value != null)
+                        {
+                            var logger = scope.ServiceProvider.GetRequiredService<ILogger<EventProcessingService>>();
+                            var @event = EventsConvert.Deserialize(message.Value.Body.ToString());
+                            await eventHandlers.HandleEvent(@event);
+                            await client.DeleteMessageAsync(message.Value.MessageId, message.Value.PopReceipt, stoppingToken);
+                        }
+                        
                     }
                     catch (Exception)
                     {

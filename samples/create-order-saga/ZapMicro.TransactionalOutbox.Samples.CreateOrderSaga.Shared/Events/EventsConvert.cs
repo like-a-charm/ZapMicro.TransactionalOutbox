@@ -13,12 +13,12 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.Events
         
         public static IEvent Deserialize(string jsonEvent)
         {
-            return JsonConvert.DeserializeObject<IEvent>(jsonEvent)!;
+            return JsonConvert.DeserializeObject<IEvent>(jsonEvent, _serializerSettings)!;
         }
         
         public static string Serialize(IEvent @event)
         {
-            return JsonConvert.SerializeObject(@event);
+            return JsonConvert.SerializeObject(@event, _serializerSettings);
         }
     }
 }

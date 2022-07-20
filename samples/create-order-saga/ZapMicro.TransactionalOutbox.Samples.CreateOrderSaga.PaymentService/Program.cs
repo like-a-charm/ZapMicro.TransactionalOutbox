@@ -31,7 +31,6 @@ builder.Services.AddDbContext<PaymentServiceDbContext>(options => options.UseSql
     Environment.GetEnvironmentVariable("PAYMENTS_DATABASE_CONNECTION_STRING") ?? string.Empty
     ));
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-builder.Services.AddHostedService<EventProcessingService>();
 builder.Services.AddScoped<IEventHandlers, EventHandlers>();
 builder.Services.AddScoped<IEventHandler, OnOrderCreatedEventHandler>();
 builder.Services.AddHealthChecks();
@@ -40,7 +39,7 @@ QueueClient CreateOrderQueueClientFactory() => new QueueClient(Environment.GetEn
 
 QueueClient PaymentCompletedQueueClientFactory() => new QueueClient(Environment.GetEnvironmentVariable("QUEUE_STORAGE_CONNECTION_STRING"), Environment.GetEnvironmentVariable("PAYMENT_COMPLETED_QUEUE_NAME"));
 
-builder.Services.AddScoped(sp => new EventProcessingService(sp, CreateOrderQueueClientFactory));
+builder.Services.AddHostedService(sp => new EventProcessingService(sp, CreateOrderQueueClientFactory));
 builder.Services.AddScoped(sp => PaymentCompletedQueueClientFactory());
 
 var app = builder.Build();

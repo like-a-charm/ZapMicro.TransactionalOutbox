@@ -16,6 +16,8 @@ services:
       - queues
     volumes:
       - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService'
+      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared'
+
   payment-service:
     build:
       context: ./../../
@@ -31,7 +33,8 @@ services:
       - database
       - queues
     volumes:
-      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService'       
+      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService'
+      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared'
   queues:
     build:
       context: queue

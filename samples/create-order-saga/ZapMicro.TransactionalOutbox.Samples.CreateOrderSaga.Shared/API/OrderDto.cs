@@ -10,6 +10,6 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.API
         public IList<AdjustmentDto> Adjustments { get; set; }
         public double Total { get; set; }
         public double FinalTotal { get; set; }
-        public OrderStatusDto Status { get; set; }
+        public string Status { get; set; }
     }
 }

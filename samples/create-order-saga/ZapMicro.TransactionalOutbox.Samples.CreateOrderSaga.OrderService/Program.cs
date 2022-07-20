@@ -32,7 +32,6 @@ builder.Services.AddDbContext<OrderServiceDbContext>(options => options.UseSqlSe
     ));
 builder.Services.AddAutoMapper(config => config.AddProfile(new OrderServiceProfile()));
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddHostedService<EventProcessingService>();
 builder.Services.AddScoped<IEventHandlers, EventHandlers>();
 builder.Services.AddScoped<IEventHandler, OnPaymentFailedEventHandler>();
 builder.Services.AddScoped<IEventHandler, OnPaymentSuccededEventHandler>();
@@ -42,7 +41,7 @@ QueueClient CreateOrderQueueClientFactory() => new QueueClient(Environment.GetEn
 
 QueueClient PaymentCompletedQueueClientFactory() => new QueueClient(Environment.GetEnvironmentVariable("QUEUE_STORAGE_CONNECTION_STRING"), Environment.GetEnvironmentVariable("PAYMENT_COMPLETED_QUEUE_NAME"));
 
-builder.Services.AddScoped(sp => new EventProcessingService(sp, PaymentCompletedQueueClientFactory));
+builder.Services.AddHostedService(sp => new EventProcessingService(sp, PaymentCompletedQueueClientFactory));
 builder.Services.AddScoped(sp => CreateOrderQueueClientFactory());
 
 var app = builder.Build();

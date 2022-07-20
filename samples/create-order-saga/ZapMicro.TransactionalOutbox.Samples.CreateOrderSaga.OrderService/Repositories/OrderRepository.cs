@@ -10,7 +10,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Repo
     public class OrderRepository: RepositoryBase<Order, Guid>, IOrderRepository
     {
         public OrderRepository(OrderServiceDbContext dbContext) : base(dbContext)
-        {
+        {   
         }
 
         protected override IQueryable<Order> IncludeDetails(DbSet<Order> _dbSet)
@@ -18,7 +18,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.Repo
             return _dbSet
                 .Include(x => x.Adjustments)
                 .Include(x => x.Lines)
-                .Include(x => x.Lines.Select(y => y.Adjustments));
+                .ThenInclude(x => x.Adjustments);
         }
     }
 }
