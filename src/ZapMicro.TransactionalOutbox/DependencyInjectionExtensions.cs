@@ -13,6 +13,10 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class DependencyInjectionExtensions
     {
+        //<summary>
+        //Adds all the services needed to provide the Transactional Outbox support
+        //</summary>
+        
         public static IServiceCollection AddTransactionalOutbox<T>(
             this IServiceCollection services,
             Func<ITransactionalOutboxConfigurationBuilder, ITransactionalOutboxConfigurationBuilder>

@@ -14,10 +14,13 @@ services:
     depends_on:
       - database
       - queues
-    volumes:
-      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService'
-      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared'
-
+    healthcheck:
+      test: curl --fail http://localhost/healthcheck || exit 1
+      interval: 60s
+      retries: 15
+      start_period: 120s
+      timeout: 10s
+    
   payment-service:
     build:
       context: ./../../
@@ -32,9 +35,25 @@ services:
     depends_on:
       - database
       - queues
-    volumes:
-      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService'
-      - './ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared:/src/samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared'
+    healthcheck:
+      test: curl --fail http://localhost/healthcheck || exit 1
+      interval: 60s
+      retries: 15
+      start_period: 120s
+      timeout: 10s
+
+  test-runner:
+    build:
+      context: ./../../
+      dockerfile: samples/create-order-saga/ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.TestRunner/Dockerfile
+    environment:
+      - 'ORDER_SERVICE_BASE_URL=http://order-service/'
+    depends_on:
+      order-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+  
   queues:
     build:
       context: queue

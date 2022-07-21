@@ -21,6 +21,10 @@ jobs:
         run:  dotnet tool install --global coverlet.console --version 3.0.3
       - name: Install reportgenerator
         run:  dotnet tool install --global dotnet-reportgenerator-globaltool
+      - name: Install docker
+        uses: KengoTODA/actions-setup-docker-compose@main
+        with:
+          version: '1.29.2'
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
@@ -35,3 +39,8 @@ jobs:
           name: test-report
           path: test-report
         if: ${{ always() }}
+      - name: Docker build
+        run: docker-compose build
+      - name: Run integration tests
+        run: docker-compose run test-runner /bin/sh -c "dotnet ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.TestRunner.dll"
+        working-directory: samples/create-order-saga
