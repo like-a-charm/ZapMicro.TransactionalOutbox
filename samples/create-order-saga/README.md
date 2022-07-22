@@ -1,4 +1,4 @@
-#Create-Order Saga Sample
+# Create-Order Saga Sample
 
 This sample is meant to demonstrate the usage of ZapMicro.TransactionalOutbox library and should not be used for production purposes.
 
