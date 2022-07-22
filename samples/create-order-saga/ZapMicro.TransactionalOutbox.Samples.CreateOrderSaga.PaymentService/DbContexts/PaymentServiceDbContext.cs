@@ -20,7 +20,7 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService.Db
         {
         }
 
-        public DbSet<OutboxMessage> OutboxMessages { get; }
-        public DbSet<Payment> Payments { get; }
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }

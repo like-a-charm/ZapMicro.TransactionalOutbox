@@ -1,7 +1,6 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS base
+RUN apt-get update && apt-get -y install curl
 WORKDIR /app
-RUN apt-get update && \
-    apt-get install curl -y
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS sdk
 RUN dotnet tool install dotnet-ef -g

@@ -6,6 +6,6 @@ namespace ZapMicro.TransactionalOutbox.DbContexts
 {
     public interface ITransactionalOutboxDbContext
     {
-        DbSet<OutboxMessage> OutboxMessages { get; }
+        DbSet<OutboxMessage> OutboxMessages { get; set; }
     }
 }

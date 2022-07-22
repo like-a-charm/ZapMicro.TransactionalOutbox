@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Shared.API;
 using ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.TestRunner;
 
+Console.WriteLine("Starting create-order-saga test");
 var client = RestEase.RestClient.For<IOrderServiceClient>(Environment.GetEnvironmentVariable("ORDER_SERVICE_BASE_URL")!);
 
 var createOrderRequest1 = new CreateOrderRequest
@@ -62,3 +63,5 @@ async Task CreateOrderAndCheckStatus(CreateOrderRequest request, string status)
     var updatedOrder = await client.GetOrder(justCreatedOrder.Id);
     if (updatedOrder.Status!=status) throw new Exception($"Expected order status to be {status}");  
 };
+
+Console.WriteLine("create-order-saga test terminated successfully");

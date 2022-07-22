@@ -21,9 +21,9 @@ namespace ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.OrderService.DbCo
         {
         }
 
-        public DbSet<OutboxMessage> OutboxMessages { get; }
-        public DbSet<Order> Orders { get; }
-        public DbSet<OrderLine> OrderLines { get; }
-        public DbSet<Adjustment> Adjustments { get; }
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Adjustment> Adjustments { get; set; }
     }
 }
