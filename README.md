@@ -1,6 +1,7 @@
+[![Build and Test](https://github.com/like-a-charm/ZapMicro.TransactionalOutbox/actions/workflows/build_and_test.yml/badge.svg?branch=main)](https://github.com/like-a-charm/ZapMicro.TransactionalOutbox/actions/workflows/build_and_test.yml)
 # ZapMicro.TransactionalOutbox
 
-[Repository](https://github.com/like-a-charm/zapmicro-transactionaloutbox) | [Nuget Package](https://www.nuget.org/packages/ZapMicro.TransactionalOutbox/)
+[Repository](https://github.com/like-a-charm/ZapMicro.TransactionalOutbox) | [Nuget Package](https://www.nuget.org/packages/ZapMicro.TransactionalOutbox/)
 
 ZapMicro.TransactionalOutbox is an implementation of the Transactional Outbox pattern for .NET Core and Entity Framework Core.
 ## Table of contents
