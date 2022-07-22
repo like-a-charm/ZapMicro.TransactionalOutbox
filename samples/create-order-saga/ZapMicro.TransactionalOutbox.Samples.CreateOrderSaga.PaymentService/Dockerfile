@@ -18,4 +18,5 @@ RUN dotnet publish "ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.Payment
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+HEALTHCHECK CMD curl --fail http://localhost/healthcheck || exit 1
 CMD ["dotnet", "ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.PaymentService.dll", "--urls=http://0.0.0.0:80"]
