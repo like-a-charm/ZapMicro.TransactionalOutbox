@@ -41,6 +41,7 @@ jobs:
         if: ${{ always() }}
       - name: Docker build
         run: docker-compose build
+        working-directory: samples/create-order-saga
       - name: Run integration tests
         run: docker-compose run test-runner /bin/sh -c "dotnet ZapMicro.TransactionalOutbox.Samples.CreateOrderSaga.TestRunner.dll"
         working-directory: samples/create-order-saga
