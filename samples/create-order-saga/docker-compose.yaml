@@ -14,12 +14,6 @@ services:
     depends_on:
       - database
       - queues
-    healthcheck:
-      test: curl --fail http://localhost/healthcheck || exit 1
-      interval: 60s
-      retries: 15
-      start_period: 120s
-      timeout: 10s
     
   payment-service:
     build:
@@ -35,12 +29,6 @@ services:
     depends_on:
       - database
       - queues
-    healthcheck:
-      test: curl --fail http://localhost/healthcheck || exit 1
-      interval: 60s
-      retries: 15
-      start_period: 120s
-      timeout: 10s
 
   test-runner:
     build:
