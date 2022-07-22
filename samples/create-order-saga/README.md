@@ -20,6 +20,43 @@ If you are running docker on windows be sure to use Linux containers.
 
 ## Run the sample
 
+The system can be run using the following:
+```
+cd ./samples/create-order-saga
+docker-compose build
+docker-compose up -d
+```
+
+To create an order use the following:
+```
+curl --location --request POST 'http://localhost:8000/order' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "Lines":[
+        {
+            "Adjustments": [],
+            "ProductId": "product-1",
+            "ProductPrice": 3,
+            "ProductQuantity":4
+        }
+    ],
+    "Adjustments":[
+        {
+            "OfferId":"offer1",
+            "Total": -1
+        }
+    ]
+}'
+```
+
+To get an existing order use the following:
+```
+curl --location --request GET 'http://localhost:8000/order/<order-id>'
+```
+
+where <order-id> is the id of an order which has been previously created.
+
+
 ## Run the test
 
 The test executes the following steps:
