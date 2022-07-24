@@ -19,7 +19,7 @@ ZapMicro.TransactionalOutbox is an implementation of the Transactional Outbox pa
 
 ## The Transactional Outbox pattern
 
-In the world of microservices, the Transactional Outbox pattern helps to guarantee the data consistency between different microservices that communicate through asynchronous messages.
+In the world of microservices, the Transactional Outbox pattern helps to guarantee data consistency between different microservices that communicate through asynchronous messages.
 
 ### The scenario
 
@@ -41,7 +41,7 @@ The create-order saga of the figure above consists of the following steps:
 3. An _OnOrderCreated_ message is sent to the message broker
 4. The pending order is returned to the client
 5. The message broker delivers the _OnOrderCreated_ message to the Payment Service
-6. The payment service processes the payment and, if it succeeds, it ir recorded in the database
+6. The payment service processes the payment and, if it succeeds, it is recorded in the database
 7. If the payment succeeded an _OnPaymentSucceeded_ message is sent to the message broker
 8. The message broker delivers the _OnPaymentSucceeded_ message to the Order Service
 9. The order service updates the order status to _Confirmed_
@@ -51,7 +51,7 @@ If the payment cannot be processed then the payment service will produce an _OnP
 ### The problem
 
 Although the Saga pattern coordinates the distributed transaction across the two microservices it is still possible to fall in inconsistent scenarios.
-For instance, a system crush of the payment service may occur after the local transaction is committed and before the _OnPaymentSucceeded_ message is delivered to the message broker.
+For instance, a system crash of the payment service may occur after the local transaction is committed and before the _OnPaymentSucceeded_ message is delivered to the message broker.
 In this case the payment has been correctly processed but the order state will remain set to _Pending_.
 
 ### The solution
